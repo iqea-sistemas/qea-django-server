@@ -3,7 +3,8 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 class IqeaUser(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True  )
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    username = models.CharField(max_length=100,null=True, blank=True )
     name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.EmailField(max_length=100)
@@ -18,7 +19,7 @@ class IqeaUser(models.Model):
 
 
 class Projects(models.Model):
-    user = models.ForeignKey(IqeaUser, on_delete=models.CASCADE, null=True, blank=True )
+    user = models.ForeignKey(IqeaUser, on_delete=models.CASCADE, null=True, blank=True,  db_index=True )
     project_name= models.CharField(max_length=100)
     location=models.CharField(max_length=100)
     start_date=models.DateField()
