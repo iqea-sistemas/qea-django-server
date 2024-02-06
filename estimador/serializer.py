@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import IqeaUser, Projects
+from .models import IqeaUser, ProjectData, PriceValue, Cotizacion
 from django.contrib.auth.models import User
 
 
@@ -11,10 +11,31 @@ class IqeaUserSerializer(serializers.ModelSerializer):
         fields='__all__'
 
 
-class ProjectsSerializer(serializers.ModelSerializer):
+
+
+
+# Projectos
+class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Projects
-        fields='__all__'
+        model = ProjectData
+        fields = '__all__'
+
+class PriceValueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PriceValue
+        fields = '__all__'
+
+class CotizacionSerializer(serializers.ModelSerializer):
+    project_data = ProjectSerializer()
+    water_cotizacion = PriceValueSerializer(many=True, read_only=True)
+    waste_water_cotizacion = PriceValueSerializer(many=True, read_only=True)
+    reuso_cotizacion = PriceValueSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Cotizacion
+        fields = '__all__'
+
+
 
 
 

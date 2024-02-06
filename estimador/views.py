@@ -4,7 +4,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .serializer import IqeaUserSerializer, ProjectsSerializer, UserSerializer
+from .serializer import IqeaUserSerializer, UserSerializer,CotizacionSerializer
 from .models import *
 
 
@@ -57,5 +57,5 @@ class IqeaUserView(viewsets.ModelViewSet):
 
 @permission_classes([IsAuthenticated])
 class ProjectsView(viewsets.ModelViewSet):
-    serializer_class = ProjectsSerializer
-    queryset = Projects.objects.all()
+    serializer_class = CotizacionSerializer
+    queryset = Cotizacion.objects.all()
