@@ -37,14 +37,45 @@ class ReusoSystemSerializer(serializers.ModelSerializer):
 
 class CotizacionSerializer(serializers.ModelSerializer):
     project_data = ProjectSerializer()
-    waterCotizacion = WaterSystemSerializer(source='water_cotizacion',many=True)
-    wasteWaterCotizacion = WasteWaterSystemSerializer(source='waste_water_cotizacion', many=True)
-    reuso_cotizacion = ReusoSystemSerializer(many=True)
+    water_cotizacion = WaterSystemSerializer(many=True)
+    waste_water_cotizacion = WasteWaterSystemSerializer(many=True)
+    reuso_cotizacion= ReusoSystemSerializer(many=True)
 
     class Meta:
         model = Cotizacion
         fields = '__all__'
 
+    def create(self, validated_data):
+        project_data = validated_data.pop('project_data')
+        water_cotizacion_data = validated_data.pop('water_cotizacion', [])
+        waste_water_cotizacion_data = validated_data.pop('waste_water_cotizacion', [])
+        reuso_cotizacion_data = validated_data.pop('reuso_cotizacion', [])
+
+        # Crear una instancia de ProjectData
+        project_data_instance = ProjectData.objects.create(**project_data)
+        cotizacion = Cotizacion.objects.create(project_data=project_data_instance,  **validated_data)
+
+        water_intances=[]
+        for water_data in water_cotizacion_data:
+            water_intance=WaterSystem.objects.create(**water_data)
+            water_intances.append(water_intance)
+        cotizacion.water_cotizacion.set(water_intances)
+
+        waste_water_instances=[]
+        for waste_water_data in waste_water_cotizacion_data:
+            waste_water_instance= WasteWaterSystem.objects.create(**waste_water_data)
+            waste_water_instances.append(waste_water_instance)
+        cotizacion.waste_water_cotizacion.set(waste_water_instances)
+
+
+        reuso_instances = []
+        for reuso_data in reuso_cotizacion_data:
+            reuso_instance = ReusoSystem.objects.create(**reuso_data)
+            reuso_instances.append(reuso_instance)
+
+        cotizacion.reuso_cotizacion.set(reuso_instances)
+
+        return cotizacion
 
 
 

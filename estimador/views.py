@@ -61,12 +61,47 @@ class IqeaUserView(viewsets.ModelViewSet):
 #     queryset = Cotizacion.objects.all()
 
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def ProjectsView(resquest):
-    user= resquest.user
-    iqea_user = IqeaUser.objects.get(user=user)
-    cotizaciones = Cotizacion.objects.filter(user=iqea_user)
-    serializer = CotizacionSerializer(cotizaciones, many=True)
-    return Response(serializer.data)
 
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
+def ProjectsView(request, cotizacion_id=None):
+    user = request.user
+    iqea_user = IqeaUser.objects.get(user=user)
+
+    if request.method == 'GET':
+        # Manejar solicitud GET
+        cotizaciones = Cotizacion.objects.filter(user=iqea_user)
+        serializer = CotizacionSerializer(cotizaciones, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        # Manejar solicitud POST
+        serializer = CotizacionSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.validated_data['user'] = iqea_user
+            cotizacion = serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'PUT':
+        # Manejar solicitud PUT para actualizar una cotización existente
+        try:
+            cotizacion = Cotizacion.objects.get(id=cotizacion_id, user=iqea_user)
+        except Cotizacion.DoesNotExist:
+            return Response({"error": "Cotizacion no encontrada"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = CotizacionSerializer(cotizacion, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        # Manejar solicitud DELETE para eliminar una cotización existente
+        try:
+            cotizacion = Cotizacion.objects.get(id=cotizacion_id, user=iqea_user)
+        except Cotizacion.DoesNotExist:
+            return Response({"error": "Cotizacion no encontrada"}, status=status.HTTP_404_NOT_FOUND)
+
+        cotizacion.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
