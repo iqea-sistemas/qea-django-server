@@ -19,12 +19,20 @@ class CotizacionAdmin(admin.ModelAdmin):
 class ProjectDataAdmin(admin.ModelAdmin):
     list_display = ( 'name', 'location') #visualizar columnas
 
-class PriceValueAdmin(admin.ModelAdmin):
+class WaterSystemAdmin(admin.ModelAdmin):
+    list_display = ( 'system', 'flow') #visualizar columnas
+
+class WasteWaterSystemAdmin(admin.ModelAdmin):
+    list_display = ( 'system', 'flow') #visualizar columnas
+
+class ReusoSystemAdmin(admin.ModelAdmin):
     list_display = ( 'system', 'flow') #visualizar columnas
 
 admin.site.register(Cotizacion, CotizacionAdmin)
 admin.site.register(ProjectData, ProjectDataAdmin)
-admin.site.register(PriceValue, PriceValueAdmin)
+admin.site.register(WaterSystem, WaterSystemAdmin)
+admin.site.register(WasteWaterSystem, WasteWaterSystemAdmin)
+admin.site.register(ReusoSystem, ReusoSystemAdmin)
 
 admin.site.register(IqeaUser, IqeaUserAdmin)
 

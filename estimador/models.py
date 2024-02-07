@@ -25,7 +25,7 @@ class ProjectData(models.Model):
     def __str__(self):
         return self.name
 
-class PriceValue(models.Model):
+class WaterSystem(models.Model):
     system = models.CharField(max_length=255, blank=True, null=True)
     flow = models.FloatField(blank=True, null=True)
     unit = models.CharField(max_length=255, blank=True, null=True)
@@ -37,13 +37,35 @@ class PriceValue(models.Model):
         # project_name = self.cotizacion.project_data.name if self.cotizacion and self.cotizacion.project_data else ""
         return f"{self.system}"
 
+class WasteWaterSystem(models.Model):
+    system = models.CharField(max_length=255, blank=True, null=True)
+    flow = models.FloatField(blank=True, null=True)
+    unit = models.CharField(max_length=255, blank=True, null=True)
+    price = models.FloatField(blank=True, null=True)
+    currency = models.CharField(max_length=255, blank=True, null=True)
+    cotizacion = models.ManyToManyField('Cotizacion', blank=True,  db_index=True )
+
+    def __str__(self):
+        return f"{self.system}"
+
+class ReusoSystem(models.Model):
+    system = models.CharField(max_length=255, blank=True, null=True)
+    flow = models.FloatField(blank=True, null=True)
+    unit = models.CharField(max_length=255, blank=True, null=True)
+    price = models.FloatField(blank=True, null=True)
+    currency = models.CharField(max_length=255, blank=True, null=True)
+    cotizacion = models.ManyToManyField('Cotizacion', blank=True,  db_index=True )
+
+    def __str__(self):
+        return f"{self.system}"
+
 class Cotizacion(models.Model):
     user = models.ForeignKey(IqeaUser, on_delete=models.CASCADE, null=True, blank=True,  db_index=True )
     created = models.DateTimeField(auto_now_add=True)
     project_data = models.ForeignKey(ProjectData, on_delete=models.CASCADE, null=True, blank=True)
-    water_cotizacion = models.ManyToManyField(PriceValue, related_name='water_cotizacion', blank=True)
-    waste_water_cotizacion = models.ManyToManyField(PriceValue, related_name='waste_water_cotizacion', blank=True)
-    reuso_cotizacion = models.ManyToManyField(PriceValue, related_name='reuso_cotizacion', blank=True)
+    water_cotizacion = models.ManyToManyField(WaterSystem, related_name='waterCotizacion', blank=True)
+    waste_water_cotizacion = models.ManyToManyField(WasteWaterSystem, related_name='wasteWaterCotizacion', blank=True)
+    reuso_cotizacion = models.ManyToManyField(ReusoSystem, related_name='reusoCotizacion', blank=True)
 
     def __str__(self):
         return self.project_data.name

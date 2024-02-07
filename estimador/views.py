@@ -55,7 +55,18 @@ class IqeaUserView(viewsets.ModelViewSet):
     queryset = IqeaUser.objects.all()
 
 
+# @permission_classes([IsAuthenticated])
+# class ProjectsView(viewsets.ModelViewSet):
+#     serializer_class = CotizacionSerializer
+#     queryset = Cotizacion.objects.all()
+
+
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
-class ProjectsView(viewsets.ModelViewSet):
-    serializer_class = CotizacionSerializer
-    queryset = Cotizacion.objects.all()
+def ProjectsView(resquest):
+    user= resquest.user
+    iqea_user = IqeaUser.objects.get(user=user)
+    cotizaciones = Cotizacion.objects.filter(user=iqea_user)
+    serializer = CotizacionSerializer(cotizaciones, many=True)
+    return Response(serializer.data)
+
