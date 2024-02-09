@@ -98,10 +98,18 @@ def ProjectsView(request, cotizacion_id=None):
 
     elif request.method == 'DELETE':
         # Manejar solicitud DELETE para eliminar una cotización existente
+        print('le delete',cotizacion_id)
+        print(user)
         try:
             cotizacion = Cotizacion.objects.get(id=cotizacion_id, user=iqea_user)
         except Cotizacion.DoesNotExist:
             return Response({"error": "Cotizacion no encontrada"}, status=status.HTTP_404_NOT_FOUND)
 
         cotizacion.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        response_data = {
+            "details": "Cotizacion Eliminada",
+            "ok": True,
+            "status": status.HTTP_200_OK
+        }
+        return Response(response_data)
+    return Response(status=status.HTTP_204_NO_CONTENT)

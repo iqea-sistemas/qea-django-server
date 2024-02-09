@@ -7,7 +7,7 @@ class IqeaUser(models.Model):
     username = models.CharField(max_length=100,null=True, blank=True )
     name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    email = models.EmailField(max_length=100)
+    email = models.EmailField(max_length=100, unique=True)
     phone = models.CharField(max_length=100)
     company = models.CharField(max_length=100, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -31,11 +31,10 @@ class WaterSystem(models.Model):
     unit = models.CharField(max_length=255, blank=True, null=True)
     price = models.FloatField(blank=True, null=True)
     currency = models.CharField(max_length=255, blank=True, null=True)
-    cotizacion = models.ManyToManyField('Cotizacion', blank=True,  db_index=True )
 
     def __str__(self):
         # project_name = self.cotizacion.project_data.name if self.cotizacion and self.cotizacion.project_data else ""
-        return f"{self.system}"
+        return f"{self.id} - {self.system} - {self.flow}{self.unit}"
 
 class WasteWaterSystem(models.Model):
     system = models.CharField(max_length=255, blank=True, null=True)
