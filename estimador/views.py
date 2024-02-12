@@ -55,10 +55,10 @@ class IqeaUserView(viewsets.ModelViewSet):
     queryset = IqeaUser.objects.all()
 
 
-# @permission_classes([IsAuthenticated])
-# class ProjectsView(viewsets.ModelViewSet):
-#     serializer_class = CotizacionSerializer
-#     queryset = Cotizacion.objects.all()
+@permission_classes([IsAuthenticated])
+class adminProjectsView(viewsets.ModelViewSet):
+    serializer_class = CotizacionSerializer
+    queryset = Cotizacion.objects.all()
 
 
 
