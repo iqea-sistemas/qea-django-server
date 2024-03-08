@@ -5,7 +5,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .serializer import IqeaUserSerializer, UserSerializer,CotizacionSerializer, SystemCategorySerializer
+from .serializer import IqeaUserSerializer, UserSerializer,CotizacionSerializer, SystemCategorySerializer, PreciosReferenciaSerializer
 from .models import *
 
 
@@ -160,9 +160,23 @@ class PrecioEstimado(APIView):
         return Response({'Precio': nuevo_y})
 
 
+@permission_classes([IsAuthenticated])
 class SystemCategoryList(generics.ListAPIView):
     queryset = SystemCategory.objects.all()
     serializer_class = SystemCategorySerializer
+
+
+@permission_classes([IsAuthenticated])
+class PreciosRefenciaList(generics.ListAPIView):
+    queryset = PreciosReferencia.objects.prefetch_related('system_type')
+    serializer_class = PreciosReferenciaSerializer
+
+
+
+@permission_classes([IsAuthenticated])
+class PreciosRefenciaDetail(generics.RetrieveAPIView):
+    queryset = PreciosReferencia.objects.all()
+    serializer_class = PreciosReferenciaSerializer
 
 
 def calcular_precio(tipo_sistema, f):

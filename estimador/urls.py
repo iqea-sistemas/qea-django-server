@@ -18,7 +18,9 @@ urlpatterns = [
     path('api/v1/projects/<cotizacion_id>/', ProjectsView, name='projects_by_user'),
     path('api/v1/projects/precio_estimado/<str:tipo_sistema>/<int:f>/', PrecioEstimado.as_view(), name='precio_estimado'),
     # path('api/v1/allProjects/', adminProjectsView.as_view(), name='all_projects'),
-    path('api/system-categories/', SystemCategoryList.as_view(), name='system-category-list'),
+    path('api/v1/system-categories/', SystemCategoryList.as_view(), name='system-category-list'),
+    path('api/v1/precios-referencia/', PreciosRefenciaList.as_view(), name='precios-referencia'),
+    path('api/v1/precios-referencia/<int:pk>', PreciosRefenciaDetail.as_view(), name='precios-referencia-detail'),
 
 
     path('api/token/', MyTokenObteainPairView.as_view(), name='token_obtain_pair'),

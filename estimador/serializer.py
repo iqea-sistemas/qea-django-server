@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import IqeaUser, ProjectData, SystemCotizacion, SystemCotizacion,SystemCotizacion, Cotizacion, PrecioRefPoint, SystemType, SystemCategory
+from .models import IqeaUser, ProjectData, SystemCotizacion, SystemCotizacion,SystemCotizacion, Cotizacion, PreciosReferencia, PrecioRefPoint, SystemType, SystemCategory
 from django.contrib.auth.models import User
 
 
@@ -10,6 +10,7 @@ class IqeaUserSerializer(serializers.ModelSerializer):
         #fields=('id', 'user','name','last_name','email','phone','company','created','isAdmin')
         fields='__all__'
 
+
 # Bases de cotizacion
 class SystemTypeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,10 +19,38 @@ class SystemTypeSerializer(serializers.ModelSerializer):
 
 class SystemCategorySerializer(serializers.ModelSerializer):
     system_category = SystemTypeSerializer(many=True, read_only=True)
-
     class Meta:
         model = SystemCategory
         fields = '__all__'
+
+
+#Puntos de Referencia
+class PrecioRefPointSerializer(serializers.ModelSerializer):
+    precios_referencia=serializers.PrimaryKeyRelatedField(queryset=PreciosReferencia.objects.all())
+
+    class Meta:
+        model = PrecioRefPoint
+        fields = '__all__'
+
+class PreciosReferenciaSerializer(serializers.ModelSerializer):
+    system_type = SystemTypeSerializer(read_only=True)
+    precios_ref_points = PrecioRefPointSerializer(many=True)
+
+    class Meta:
+        model = PreciosReferencia
+        fields = '__all__'
+
+    def get_system_type(self, obj):
+        system_type = obj.system_type
+        return {
+            'id': system_type.id,
+            'title': system_type.title,
+        }
+
+
+
+
+
 
 # Projectos
 class ProjectSerializer(serializers.ModelSerializer):
@@ -142,7 +171,4 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
-class PrecioRefPointSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PrecioRefPoint
-        fields = '__all__'
+
